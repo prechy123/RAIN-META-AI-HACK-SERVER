@@ -18,6 +18,7 @@ def business_serial(business) -> dict:
         "businessDescription": business["businessDescription"],
         "businessAddress": business["businessAddress"],
         "businessPhone": business["businessPhone"],
+        "businessEmailAddress": business.get("businessEmailAddress"),
         "businessCategory": business["businessCategory"],
         "businessOpenHours": business.get("businessOpenHours"),
         "businessOpenDays": business.get("businessOpenDays"),

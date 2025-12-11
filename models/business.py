@@ -18,6 +18,7 @@ class Business(BaseModel):
     businessDescription: str
     businessAddress: str
     businessPhone: str
+    businessEmailAddress: Optional[EmailStr] = None
     businessCategory: str
     businessOpenHours: Optional[str] = None
     businessOpenDays: Optional[str] = None
@@ -32,6 +33,7 @@ class BusinessUpdate(BaseModel):
     businessDescription: Optional[str] = None
     businessAddress: Optional[str] = None
     businessPhone: Optional[str] = None
+    businessEmailAddress: Optional[EmailStr] = None
     businessCategory: str
     businessOpenHours: Optional[str] = None
     businessOpenDays: Optional[str] = None
