@@ -10,6 +10,7 @@ class ChatRequest(BaseModel):
     user_phone: Optional[str] = None
 
 
+
 class ChatResponse(BaseModel):
     """Chat response model"""
     answer: str
