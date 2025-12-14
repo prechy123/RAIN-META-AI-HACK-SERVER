@@ -58,7 +58,7 @@ async def search_in_whatsapp(session_id: str, query: str):
 
 # POST - Ask question about business (integrated with AI agent)
 @router.post("/ask")
-async def ask_question(session_id: str, business_id: str, question: str, thread_id: str):
+async def ask_question(session_id: str, business_id: str, question: str):
     """
     Ask a question about a business using the AI agent.
     
@@ -78,12 +78,12 @@ async def ask_question(session_id: str, business_id: str, question: str, thread_
             )
         
         # Get session for conversation history
-        session = session_collection.find_one({"_id": ObjectId(session_id)})
-        if not session:
-            return JSONResponse(
-                status_code=404,
-                content={"message": "Session not found", "error": True}
-            )
+        # session = session_collection.find_one({"_id": ObjectId(session_id)})
+        # if not session:
+        #     return JSONResponse(
+        #         status_code=404,
+        #         content={"message": "Session not found", "error": True}
+        #     )
         
         # Call main_agent with WhatsApp session
         from agent.main_agent import main_agent
@@ -91,7 +91,7 @@ async def ask_question(session_id: str, business_id: str, question: str, thread_
         result = await main_agent(
             query=question,
             business_id=business_id,
-            thread_id=thread_id,
+            thread_id=session_id,
             user_email=None,
             user_phone=None
         )
@@ -102,23 +102,23 @@ async def ask_question(session_id: str, business_id: str, question: str, thread_
         email_sent = result.get("email_sent", False)
         
         # Update session history
-        session_collection.update_one(
-            {"_id": ObjectId(session_id)},
-            {
-                "$push": {
-                    "conversation_history": {
-                        "question": question,
-                        "answer": answer,
-                        "route": route,
-                        "timestamp": datetime.now()
-                    }
-                },
-                "$set": {
-                    "business_id": business_id,  # Track current business
-                    "last_activity": datetime.now()
-                }
-            }
-        )
+        # session_collection.update_one(
+        #     {"_id": ObjectId(session_id)},
+        #     {
+        #         "$push": {
+        #             "conversation_history": {
+        #                 "question": question,
+        #                 "answer": answer,
+        #                 "route": route,
+        #                 "timestamp": datetime.now()
+        #             }
+        #         },
+        #         "$set": {
+        #             "business_id": business_id,  # Track current business
+        #             "last_activity": datetime.now()
+        #         }
+        #     }
+        # )
         
         return JSONResponse(
             status_code=200,
