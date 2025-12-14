@@ -56,31 +56,80 @@ async def search_in_whatsapp(session_id: str, query: str):
             content={"message": "Internal server error", "error": str(e)}
         )
 
-# POST - Ask question about business (integrate with Llama here)
+# POST - Ask question about business (integrated with AI agent)
 @router.post("/ask")
 async def ask_question(session_id: str, business_id: str, question: str):
+    """
+    Ask a question about a business using the AI agent.
+    
+    **Features:**
+    - Tier 1 (FAQ): Answers from Pinecone knowledge base
+    - Tier 2 (Support): Collects contact info and emails business owner
+    - Conversation: General chat
+    - Conversation history tracking
+    """
     try:
+        # Validate business exists
         business = business_collection.find_one({"business_id": business_id})
         if not business:
             return JSONResponse(
-                status_code=400,
+                status_code=404,
                 content={"message": "Business not found", "error": True}
             )
         
-        # TODO: Integrate with Llama AI here to generate response based on business data
-        # For now, return a simple response
-        response = f"This is information about {business['name']}"
+        # Get session for conversation history
+        # session = session_collection.find_one({"_id": ObjectId(session_id)})
+        # if not session:
+        #     return JSONResponse(
+        #         status_code=404,
+        #         content={"message": "Session not found", "error": True}
+        #     )
+        
+        # Call main_agent with WhatsApp session
+        from agent.main_agent import main_agent
+        
+        result = await main_agent(
+            query=question,
+            business_id=business_id,
+            thread_id=session_id,
+            user_email=None,
+            user_phone=None
+        )
+        
+        answer = result.get("answer", "I'm having trouble processing your request.")
+        route = result.get("route", "unknown")
+        needs_contact_info = result.get("needs_contact_info", False)
+        email_sent = result.get("email_sent", False)
         
         # Update session history
-        session_collection.update_one(
-            {"_id": ObjectId(session_id)},
-            {"$push": {"conversation_history": {"question": question, "answer": response}}}
-        )
+        # session_collection.update_one(
+        #     {"_id": ObjectId(session_id)},
+        #     {
+        #         "$push": {
+        #             "conversation_history": {
+        #                 "question": question,
+        #                 "answer": answer,
+        #                 "route": route,
+        #                 "timestamp": datetime.now()
+        #             }
+        #         },
+        #         "$set": {
+        #             "business_id": business_id,  # Track current business
+        #             "last_activity": datetime.now()
+        #         }
+        #     }
+        # )
         
         return JSONResponse(
             status_code=200,
-            content={"answer": response}
+            content={
+                "answer": answer,
+                "route": route,
+                "needs_contact_info": needs_contact_info,
+                "email_sent": email_sent
+            }
         )
+        
     except Exception as e:
         return JSONResponse(
             status_code=500,
