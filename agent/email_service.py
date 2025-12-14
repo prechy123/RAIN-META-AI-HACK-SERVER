@@ -42,42 +42,91 @@ async def send_support_email(
         # Email body (HTML)
         html_body = f"""
         <html>
-          <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-            <div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
-              <h2 style="color: #2563eb; border-bottom: 2px solid #2563eb; padding-bottom: 10px;">
-                📧 New Customer Support Request
-              </h2>
-              
-              <div style="background-color: #f3f4f6; padding: 15px; border-radius: 5px; margin: 20px 0;">
-                <h3 style="margin-top: 0; color: #1f2937;">Customer Information:</h3>
-                <p><strong>Email:</strong> {user_email}</p>
-                <p><strong>Phone:</strong> {user_phone}</p>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin: 0; padding: 0; background-color: #fafafa; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #fafafa; padding: 40px 20px;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+          <tr>
+            <td style="padding: 32px 40px 24px; background: #155dfc; display: flex; align-items: center; justify-content: space-between;">
+              <div>
+                <h1 style="margin: 0; color: #ffffff; font-size: 22px; font-weight: 600; letter-spacing: -0.3px;">
+                  New Support Request
+                </h1>
+                <p style="margin: 8px 0 0; color: rgba(255,255,255,0.9); font-size: 14px; font-weight: 400;">
+                  A customer needs your attention
+                </p>
               </div>
-              
-              <div style="margin: 20px 0;">
-                <h3 style="color: #1f2937;">Support Request:</h3>
-                <p style="background-color: #fef3c7; padding: 15px; border-left: 4px solid #f59e0b; border-radius: 4px;">
+              <img src="https://rain-meta-hack-web.vercel.app/logo.jpeg" alt="SharpChat Logo" width="100" style="display: block; border-radius: 24px;">
+            </td>
+          </tr>
+          <tr>
+            <td style="padding: 32px 40px 0;">
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td style="padding: 12px 0; border-bottom: 1px solid #f5f5f7;">
+                    <span style="color: #86868b; font-size: 13px; font-weight: 500;  letter-spacing: 0.5px;">Customer Email</span>
+                    <p style="margin: 4px 0 0; color: #1d1d1f; font-size: 15px; font-weight: 400;">
+                      <a href="mailto:{user_email}" style="color: #0071e3; text-decoration: none;">{user_email}</a>
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 12px 0;">
+                    <span style="color: #86868b; font-size: 13px; font-weight: 500;  letter-spacing: 0.5px;">Customer Phone</span>
+                    <p style="margin: 4px 0 0; color: #1d1d1f; font-size: 15px; font-weight: 400;">
+                      <a href="tel:{user_phone}" style="color: #0071e3; text-decoration: none;">{user_phone}</a>
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding: 32px 40px 0;">
+              <h2 style="margin: 0 0 12px; color: #1d1d1f; font-size: 17px; font-weight: 600; letter-spacing: -0.2px;">
+                Request
+              </h2>
+              <div style="background-color: #155dfc1a; padding: 16px 20px; border-radius: 6px;">
+                <p style="margin: 0; color: #1d1d1f; font-size: 15px; line-height: 1.5;">
                   {support_request}
                 </p>
               </div>
-              
-              <div style="margin: 20px 0;">
-                <h3 style="color: #1f2937;">Conversation Summary:</h3>
-                <div style="background-color: #f9fafb; padding: 15px; border-radius: 4px; white-space: pre-wrap;">
-{conversation_summary}
-                </div>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding: 32px 40px;">
+              <h2 style="margin: 0 0 12px; color: #1d1d1f; font-size: 17px; font-weight: 600; letter-spacing: -0.2px;">
+                Conversation History
+              </h2>
+              <div style="background-color: #155dfc1a; padding: 20px; border-radius: 8px; font-size: 14px; line-height: 1.6; color: #1d1d1f; white-space: pre-wrap;">
+                {conversation_summary}
               </div>
-              
-              <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
-              
-              <p style="color: #6b7280; font-size: 14px;">
-                This email was sent via <strong>SharpChat AI</strong> - Your intelligent business assistant platform.
-                <br>
-                Please respond directly to the customer at <a href="mailto:{user_email}">{user_email}</a> or call them at {user_phone}.
-              </p>
-            </div>
-          </body>
-        </html>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding: 0 40px 32px;">
+              <div style="border-top: 1px solid #f5f5f7; padding-top: 24px;">
+                <p style="margin: 0; color: #86868b; font-size: 13px; line-height: 1.5;">
+                  Sent via SharpChat AI, <a href="https://rain-meta-hack-web.vercel.app/" target="_blank" style="color: #0071e3; text-decoration: none;">CLICK TO REGISTER YOUR BUSINESS WITH US.</a>
+                </p>
+                <p style="margin: 8px 0 0; color: #86868b; font-size: 13px; line-height: 1.5;">
+                  Reply to <a href="mailto:{user_email}" style="color: #0071e3; text-decoration: none;">{user_email}</a> or call <a href="tel:{user_phone}" style="color: #0071e3; text-decoration: none;">{user_phone}</a>
+                </p>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+
+</html>
         """
         
         # Attach HTML body
