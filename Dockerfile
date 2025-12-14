@@ -1,11 +1,11 @@
 # Use Python 3.11 slim image as base
-FROM python:3.14.0-slim
+FROM python:3.11.9-slim
 
 # Set working directory
 WORKDIR /app
 
 # Set environment variables
-ENV MONGO_URL=mongodb+srv://admin:admin@cluster0.vvfdq9t.mongodb.net/?appName=Cluster0
+# set on the server
 
 # Copy requirements file
 COPY requirements.txt .
