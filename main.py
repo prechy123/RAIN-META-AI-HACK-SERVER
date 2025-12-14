@@ -9,6 +9,12 @@ from routes.chatbot_routes import router as ChatbotRouter
 from routes.kb_route import router as KBRouter
 import logging
 
+# Configure logging to show INFO level and above
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(levelname)s:     %(name)s - %(message)s'
+)
+
 logger = logging.getLogger("fastapi_app")
 
 @asynccontextmanager

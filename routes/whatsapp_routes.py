@@ -98,7 +98,6 @@ async def ask_question(session_id: str, business_id: str, question: str):
         
         answer = result.get("answer", "I'm having trouble processing your request.")
         route = result.get("route", "unknown")
-        needs_contact_info = result.get("needs_contact_info", False)
         email_sent = result.get("email_sent", False)
         
         # Update session history
@@ -125,7 +124,6 @@ async def ask_question(session_id: str, business_id: str, question: str):
             content={
                 "answer": answer,
                 "route": route,
-                "needs_contact_info": needs_contact_info,
                 "email_sent": email_sent
             }
         )

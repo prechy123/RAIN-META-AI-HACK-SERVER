@@ -13,6 +13,7 @@ from vector_db.kb_toolkit import (
 from config.conf import settings
 from models.kbase import (
     EmbedRequest,
+    EmbedSingleBusinessRequest,
     EmbedResponse,
     DeleteResponse
 )
@@ -27,7 +28,7 @@ async def embed_documents(request: EmbedRequest):
     Embed business documents to Pinecone vector database.
     """
     try:
-        logger.info(f"Starting embed operation - business_id: {request.business_id}, category: {request.category}")
+        logger.info(f"Starting embed for all data in the MongoDB Business Collection")
         
         # Call embed_all_documents with filters
         result = embed_all_documents(
@@ -58,6 +59,87 @@ async def embed_documents(request: EmbedRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@router.post("/embed/business", response_model=EmbedResponse)
+async def embed_single_business(request: EmbedSingleBusinessRequest):
+    """
+    Embed a single business to Pinecone vector database.
+    
+    **Use this to:**
+    - Update a specific business after changes
+    - Add a newly created business to the knowledge base
+    - Re-sync a single business without affecting others
+    
+    Args:
+        business_id: The specific business ID to embed (e.g., "BUS-0001")
+        
+    Example:
+        ```json
+        {
+          "business_id": "BUS-0001"
+        }
+        ```
+    """
+    try:
+        logger.info(f"Embedding single business: {request.business_id}")
+        
+        # Fetch the specific business from MongoDB
+        from config.database import business_collection
+        business = business_collection.find_one({"business_id": request.business_id})
+        
+        if not business:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Business {request.business_id} not found in database"
+            )
+        
+        # Initialize pipeline
+        pipeline = VectorPipeline()
+        
+        # Create vector records for this business
+        from vector_db.kb_toolkit import create_vector_records, upsert_to_pinecone, check_if_business_changed
+        
+        # Check if business has changed
+        namespace = ""
+        has_changed = check_if_business_changed(business, pipeline, namespace)
+        
+        if not has_changed:
+            logger.info(f"Business {request.business_id} is already up-to-date")
+            return EmbedResponse(
+                status="success",
+                message=f"Business {request.business_id} is already up-to-date",
+                total_businesses=1,
+                total_vectors=0,
+                changed_businesses=0,
+                skipped_businesses=1
+            )
+        
+        # Create and upsert vectors
+        records = create_vector_records(business, chunk_text_content=True)
+        
+        if records:
+            stats = upsert_to_pinecone(pipeline, records, batch_size=100, namespace=namespace)
+            
+            return EmbedResponse(
+                status="success",
+                message=f"Successfully embedded business {request.business_id}",
+                total_businesses=1,
+                total_vectors=len(records),
+                changed_businesses=1,
+                skipped_businesses=0
+            )
+        else:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Failed to create vector records for business {request.business_id}"
+            )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error embedding single business: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @router.delete("/business/{business_id}", response_model=DeleteResponse)
 async def delete_business(business_id: str):
     """
@@ -78,12 +160,8 @@ async def delete_business(business_id: str):
     try:
         logger.info(f"Deleting business {business_id} from knowledge base")
         
-        # Initialize pipeline
-        pipeline = VectorPipeline(
-            index_name=settings.KB_INDEX,
-            embedding_model=settings.HUGGINGFACE_EMBED_MODEL,
-            dimension=384
-        )
+        # Initialize pipeline (no parameters needed - reads from settings)
+        pipeline = VectorPipeline()
         
         # Delete vectors with matching business_id
         delete_response = pipeline.index.delete(
@@ -95,8 +173,7 @@ async def delete_business(business_id: str):
         
         return DeleteResponse(
             status="success",
-            message=f"Successfully deleted business {business_id}",
-            deleted_count=1  # Pinecone doesn't return count, assume 1 business
+            message=f"Successfully deleted business {business_id}"
         )
         
     except Exception as e:
@@ -161,22 +238,21 @@ async def get_stats():
         ```
     """
     try:
-        # Initialize pipeline
-        pipeline = VectorPipeline(
-            index_name=settings.KB_INDEX,
-            embedding_model=settings.HUGGINGFACE_EMBED_MODEL,
-            dimension=384
-        )
+        # Initialize pipeline (no parameters needed - reads from settings)
+        pipeline = VectorPipeline()
         
-        # Get index stats
+        # Get index stats (returns Pinecone object)
         stats = pipeline.index.describe_index_stats()
+        
+        # Convert to dict for JSON serialization
+        stats_dict = stats.to_dict()
         
         return {
             "status": "success",
             "index_name": settings.KB_INDEX,
-            "total_vectors": stats.get("total_vector_count", 0),
-            "dimension": stats.get("dimension", 384),
-            "namespaces": stats.get("namespaces", {})
+            "total_vectors": stats_dict.get("total_vector_count", 0),
+            "dimension": stats_dict.get("dimension", 384),
+            "namespaces": stats_dict.get("namespaces", {})
         }
         
     except Exception as e:

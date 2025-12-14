@@ -214,6 +214,7 @@ def create_vector_records(
             'business_name': business.get('businessName', 'N/A'),
             'category': business.get('businessCategory', 'N/A'),
             'business_email': business.get('businessEmailAddress', 'N/A'),
+            'content_hash': content_hash,  # ADD THIS: Store hash for change detection
             'timestamp': datetime.utcnow().isoformat()
         }
     }
@@ -302,7 +303,7 @@ def check_if_business_changed(
     namespace: str = ""
 ) -> bool:
     """
-    Check if business document already exists in Pinecone by doc_id.
+    Check if business content has changed by comparing hashes.
     
     Args:
         business: Business document from MongoDB
@@ -310,14 +311,13 @@ def check_if_business_changed(
         namespace: Pinecone namespace
         
     Returns:
-        True if business doesn't exist (needs sync), False if exists (skip)
+        True if business changed or doesn't exist (needs sync), False if unchanged (skip)
     """
     try:
         business_id = business.get('business_id')
-        doc_id = generate_business_doc_id(business)
+        current_hash = generate_business_doc_id(business)
         
-        # Query by metadata filter (similar to check_doc_exists)
-        # Get embedding dimension from the model
+        # Query by metadata filter to get existing business
         dimension = len(pipeline.embeddings.embed_query("test"))
         
         results = pipeline.index.query(
@@ -328,18 +328,29 @@ def check_if_business_changed(
             namespace=namespace
         )
         
-        exists = len(results.get('matches', [])) > 0
+        matches = results.get('matches', [])
         
-        if exists:
-            logger.info(f"SKIP: Business {business_id} already exists, skipping")
-            return False  
+        if not matches:
+            # Business doesn't exist in Pinecone
+            logger.info(f"NEW: Business {business_id} not found in index, will insert")
+            return True
+        
+        # Business exists - check if content changed
+        existing_hash = matches[0].get('metadata', {}).get('content_hash')
+        
+        if existing_hash == current_hash:
+            # Content hasn't changed
+            logger.info(f"SKIP: Business {business_id} unchanged (hash match)")
+            return False
         else:
-            logger.info(f"NEW: Inserting Business {business_id}")
-            return True 
+            # Content has changed
+            logger.info(f"UPDATE: Business {business_id} content changed (hash mismatch)")
+            return True
             
     except Exception as e:
-        logger.error(f"ERROR: Error checking if business exists: {str(e)}")
-        return True 
+        logger.error(f"ERROR: Error checking if business changed: {str(e)}")
+        # On error, assume changed to be safe
+        return True
 
 
 def embed_all_documents(

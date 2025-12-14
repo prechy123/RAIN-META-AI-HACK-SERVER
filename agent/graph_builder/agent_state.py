@@ -14,10 +14,10 @@ class AgentState(TypedDict):
     # User contact info (for Tier 2)
     user_email: Optional[str]
     user_phone: Optional[str]
+    preferred_contact_method: Optional[str]  # "email", "phone", or "both"
     
     # Routing
     route: Optional[str]  # "tier1", "tier2", or "conversation"
     
     # Tier 2 state
-    needs_contact_info: bool
     email_sent: bool

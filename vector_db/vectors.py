@@ -39,8 +39,8 @@ class VectorPipeline:
                     )
                 )
                 logger.info(f"SUCCESS: Created index '{self.index_name}' with dimension {dimension}")
-            else:
-                logger.info(f"SUCCESS: Index '{self.index_name}' already exists")
+            # else:
+            #     logger.info(f"SUCCESS: Index '{self.index_name}' already exists")
                 
             self.index = self.pc.Index(self.index_name)
             

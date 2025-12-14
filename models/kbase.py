@@ -3,9 +3,13 @@ from typing import Optional
 
 class EmbedRequest(BaseModel):
     """Request model for embedding documents"""
-    business_id: Optional[str] = None
-    category: Optional[str] = None
-    limit: Optional[int] = None
+    category: Optional[str] = None  # Filter by business category
+    limit: Optional[int] = None  # Limit number of businesses to embed
+
+
+class EmbedSingleBusinessRequest(BaseModel):
+    """Request model for embedding a single business"""
+    business_id: str  # Required: specific business to embed
 
 
 class DeleteBusinessRequest(BaseModel):
@@ -27,4 +31,3 @@ class DeleteResponse(BaseModel):
     """Response model for delete operations"""
     status: str
     message: str
-    deleted_count: int

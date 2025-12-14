@@ -26,7 +26,7 @@ async def get_business_info(business_id: str) -> Dict[str, str]:
         
         return {
             "business_name": business.get("businessName"),
-            "business_email": business.get("businessEmailAddress")
+            "business_email": business.get("email")
         }
         
     except Exception as e:
@@ -62,8 +62,11 @@ async def main_agent(
         {
             "answer": "AI response",
             "route": "tier1" | "tier2" | "conversation",
-            "needs_contact_info": bool,
-            "email_sent": bool
+            "email_sent": bool,
+            "business_name": str,
+            "business_email": str,
+            "user_email": str | None,
+            "user_phone": str | None
         }
     """
     try:
@@ -86,7 +89,6 @@ async def main_agent(
             "user_email": user_email,
             "user_phone": user_phone,
             "route": None,
-            "needs_contact_info": False,
             "email_sent": False
         }
         
@@ -111,8 +113,11 @@ async def main_agent(
         response = {
             "answer": answer,
             "route": result.get("route"),
-            "needs_contact_info": result.get("needs_contact_info", False),
-            "email_sent": result.get("email_sent", False)
+            "email_sent": result.get("email_sent", False),
+            "business_name": business_name,
+            "business_email": business_email,
+            "user_email": result.get("user_email"),
+            "user_phone": result.get("user_phone")
         }
         
         logger.info(f"Response generated - Route: {response['route']}")
@@ -123,6 +128,9 @@ async def main_agent(
         return {
             "answer": "I'm having trouble processing your request. Please try again.",
             "route": "error",
-            "needs_contact_info": False,
-            "email_sent": False
+            "email_sent": False,
+            "business_name": business_name or "this business",
+            "business_email": business_email,
+            "user_email": None,
+            "user_phone": None
         }

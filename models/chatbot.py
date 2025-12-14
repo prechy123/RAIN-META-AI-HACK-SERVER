@@ -15,5 +15,12 @@ class ChatResponse(BaseModel):
     """Chat response model"""
     answer: str
     route: str = "conversation"  # Default to "conversation" if not set
-    needs_contact_info: bool
     email_sent: bool
+    
+    # Business information
+    business_name: str
+    business_email: Optional[str] = None
+    
+    # User contact information (extracted during conversation)
+    user_email: Optional[str] = None
+    user_phone: Optional[str] = None

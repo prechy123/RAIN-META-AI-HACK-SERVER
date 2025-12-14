@@ -26,4 +26,4 @@ htmlcov/
 *.db
 *.sqlite3
 node_modules/
-
+vector_pipeline.log
