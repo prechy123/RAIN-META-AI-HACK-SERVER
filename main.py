@@ -1,12 +1,12 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from routes.utils.auth import endpoint_auth
 from agent.graph_builder.compiled_agent import close_checkpointer
 from routes.business_routes import router as BusinessRouter
-from routes.whatsapp_routes import router as WhatsAppRouter
 from routes.chatbot_routes import router as ChatbotRouter
 from routes.kb_route import router as KBRouter
+from routes.whatsapp_webhook_routes import router as WhatsAppWebhookRouter
 import logging
 
 # Configure logging to show INFO level and above
@@ -16,6 +16,7 @@ logging.basicConfig(
 )
 
 logger = logging.getLogger("fastapi_app")
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -34,9 +35,8 @@ async def lifespan(app: FastAPI):
         logger.error(f"❌ Error during shutdown: {e}")
 
 
-
 app = FastAPI(
-    title= "ShapChat API",
+    title="ShapChat API",
     description="AI-Powered Chatting platform for local SMEs",
     version="0.1.0",
     docs_url="/docs",
@@ -46,11 +46,12 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], 
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 @app.get("/")
 async def root():
@@ -58,6 +59,7 @@ async def root():
     return {
         "message": "Welcome to the SharpChat AI Chatbot API! Visit /docs for API documentation."
     }
+
 
 @app.get("/health")
 async def health_check():
@@ -67,8 +69,11 @@ async def health_check():
         "service": "SharpChat AI Chatbot"
     }
 
-
-app.include_router(BusinessRouter, prefix="/business", tags=["Business"], dependencies=[Depends(endpoint_auth)])
-app.include_router(WhatsAppRouter, prefix="/whatsapp", tags=["WhatsApp"], dependencies=[Depends(endpoint_auth)])
-app.include_router(ChatbotRouter, prefix="/chatbot", tags=["Chatbot"], dependencies=[Depends(endpoint_auth)])
-app.include_router(KBRouter, prefix="/kb", tags=["Knowledge Base"], dependencies=[Depends(endpoint_auth)])
+app.include_router(WhatsAppWebhookRouter, prefix="/web-hook",
+                   tags=["WhatsApp Webhook"])
+app.include_router(BusinessRouter, prefix="/business",
+                   tags=["Business"], dependencies=[Depends(endpoint_auth)])
+app.include_router(ChatbotRouter, prefix="/chatbot",
+                   tags=["Chatbot"], dependencies=[Depends(endpoint_auth)])
+app.include_router(KBRouter, prefix="/kb",
+                   tags=["Knowledge Base"], dependencies=[Depends(endpoint_auth)])

@@ -11,8 +11,11 @@ WORKDIR /app
 COPY requirements.txt .
 
 # Install dependencies
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+# RUN pip install --no-cache-dir --upgrade pip && \
+#     pip install --no-cache-dir -r requirements.txt
+
+RUN pip install --upgrade pip && \
+    pip install -r requirements.txt
 
 # Copy application code
 COPY . .
@@ -25,5 +28,10 @@ CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
 
 # docker build -t rain-meta-hack-server:1.0.[X] .
 # docker images
+# docker tag rain-meta-hack-server:1.0.[X] ayomide100/rain-meta-hack-server:1.0.[X]
+# docker push ayomide100/rain-meta-hack-server:1.0.[X]
+
+# for macbook architecture
+# docker build --platform linux/amd64 -t rain-meta-hack-server:1.0.[X] .
 # docker tag rain-meta-hack-server:1.0.[X] ayomide100/rain-meta-hack-server:1.0.[X]
 # docker push ayomide100/rain-meta-hack-server:1.0.[X]
