@@ -74,6 +74,7 @@ psycopg2-binary==2.9.11
 pydantic==2.12.5
 pydantic-settings==2.12.0
 pydantic_core==2.41.5
+PyJWT==2.10.1
 pymongo==4.15.5
 python-dateutil==2.9.0.post0
 python-dotenv==1.2.1
@@ -99,7 +100,7 @@ tokenizers==0.22.1
 torch==2.9.1
 tqdm==4.67.1
 transformers==4.57.3
-twilio==9.4.0
+twilio==9.8.8
 typing-inspect==0.9.0
 typing-inspection==0.4.2
 typing_extensions==4.15.0
