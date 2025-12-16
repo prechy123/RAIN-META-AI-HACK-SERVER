@@ -5,11 +5,11 @@ FROM python:3.11.9-slim
 # Install necessary system dependencies for building Python packages:
 # 1. build-essential/gcc: Needed for C extensions (like the non-binary parts of psycopg)
 # 2. libpq-dev: The PostgreSQL client library (libpq) required by psycopg
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        build-essential \
-        libpq-dev && \
-    rm -rf /var/lib/apt/lists/*
+# RUN apt-get update && \
+#     apt-get install -y --no-install-recommends \
+#         build-essential \
+#         libpq-dev && \
+#     rm -rf /var/lib/apt/lists/*
 
 # Set working directory
 WORKDIR /app
