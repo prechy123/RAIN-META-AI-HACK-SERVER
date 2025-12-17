@@ -452,7 +452,7 @@ RAIN-META-AI-HACK-SERVER/
 ├── agent/                          # AI Agent logic
 │   ├── graph_builder/              # LangGraph workflow
 │   │   ├── agent_state.py          # State schema
-│   │   └── compiled_agent.py       # Graph compilation
+│   │   └── compiled_agent.py       # Graph compilation with Postgres Memory
 │   ├── sub_agent/                  # Agent nodes
 │   │   ├── router.py               # Query routing
 │   │   ├── tier1.py                # FAQ handler
@@ -473,11 +473,6 @@ RAIN-META-AI-HACK-SERVER/
 │   ├── chatbot.py                  # Chatbot schemas
 │   ├── kbase.py                    # Knowledge base schemas
 │   └── whatsapp.py                 # WhatsApp schemas
-│
-├── postgres_db/                    # PostgreSQL setup
-│   ├── database.py                 # Connection pool
-│   ├── init_db.py                  # Database initialization
-│   └── models.py                   # SQL models
 │
 ├── routes/                         # API routes
 │   ├── business_routes.py          # Business endpoints
