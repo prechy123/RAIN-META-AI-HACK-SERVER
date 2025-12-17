@@ -8,7 +8,8 @@ from passlib.context import CryptContext
 from vector_db.kb_toolkit import process_and_embed_business
 
 router = APIRouter()
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# Use PBKDF2-SHA256 instead of bcrypt (no 72-byte limitation)
+pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
 
 def generate_business_id():
@@ -33,8 +34,10 @@ async def signup_business(business: Business):
             )
 
         business_dict = business.model_dump()
+        # Hash the password before storing using PBKDF2-SHA256
         password = str(business.password)
-        business_dict["password"] = password
+        hashed_password = pwd_context.hash(password)
+        business_dict["password"] = hashed_password
         business_dict["business_id"] = generate_business_id()
         business_dict["faqs"] = business_dict.get("faqs", [])
         business_dict["items"] = business_dict.get("items", [])
@@ -42,9 +45,10 @@ async def signup_business(business: Business):
         result = business_collection.insert_one(business_dict)
         new_business = business_collection.find_one(
             {"_id": result.inserted_id})
-            
+
         # Trigger embedding for the new business
-        embedding_result = process_and_embed_business(new_business["business_id"])
+        embedding_result = process_and_embed_business(
+            new_business["business_id"])
 
         return JSONResponse(
             status_code=200,
@@ -64,11 +68,35 @@ async def signup_business(business: Business):
 async def login_business(email: str, password: str):
     try:
         business = business_collection.find_one({"email": email})
-        if not business or not password == business["password"]:
+        if not business:
             return JSONResponse(
                 status_code=400,
                 content={"message": "Invalid credentials", "error": True}
             )
+
+        stored_password = business["password"]
+
+        # Check if the stored password is hashed
+        # PBKDF2 hashes start with $pbkdf2, bcrypt with $2a$/$2b$/$2y$
+        is_hashed = (stored_password.startswith("$pbkdf2") or
+                     stored_password.startswith("$2b$") or
+                     stored_password.startswith("$2a$") or
+                     stored_password.startswith("$2y$"))
+
+        if is_hashed:
+            # Verify hashed password
+            if not pwd_context.verify(password, stored_password):
+                return JSONResponse(
+                    status_code=400,
+                    content={"message": "Invalid credentials", "error": True}
+                )
+        else:
+            # Legacy plain text comparison
+            if password != stored_password:
+                return JSONResponse(
+                    status_code=400,
+                    content={"message": "Invalid credentials", "error": True}
+                )
 
         return JSONResponse(
             status_code=200,
