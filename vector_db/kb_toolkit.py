@@ -426,3 +426,71 @@ def embed_all_documents(
             'error': str(e)
         }
 
+
+def process_and_embed_business(business_id: str) -> Dict[str, Any]:
+    """
+    Process a single business for embedding: fetch, check changes, and upsert if needed.
+    Can be used by signup/update endpoints directly.
+    """
+    try:
+        logger.info(f"Processing embedding for business: {business_id}")
+        
+        # Fetch business
+        business = business_collection.find_one({"business_id": business_id})
+        if not business:
+            return {
+                "status": "error",
+                "message": f"Business {business_id} not found in database",
+                "error": True
+            }
+        
+        # Initialize pipeline
+        pipeline = VectorPipeline()
+        namespace = ""
+        
+        # Check for changes
+        has_changed = check_if_business_changed(business, pipeline, namespace)
+        
+        if not has_changed:
+            logger.info(f"Business {business_id} is unchanged")
+            return {
+                "status": "success",
+                "message": f"Business {business_id} is already up-to-date",
+                "embedding_status": "skipped",
+                "total_businesses": 1,
+                "total_vectors": 0,
+                "changed_businesses": 0,
+                "skipped_businesses": 1
+            }
+            
+        # Create and upsert vectors
+        records = create_vector_records(business, chunk_text_content=True)
+        
+        if records:
+            stats = upsert_to_pinecone(pipeline, records, batch_size=100, namespace=namespace)
+            return {
+                "status": "success",
+                "message": f"Successfully embedded business {business_id}",
+                "embedding_status": "embedded",
+                "total_businesses": 1,
+                "total_vectors": len(records),
+                "changed_businesses": 1,
+                "skipped_businesses": 0,
+                "upsert_stats": stats
+            }
+        else:
+            return {
+                "status": "error", 
+                "message": f"No content to embed for {business_id}",
+                "error": True
+            }
+            
+    except Exception as e:
+        logger.error(f"Error embedding business {business_id}: {str(e)}", exc_info=True)
+        return {
+            "status": "error",
+            "message": f"Embedding failed: {str(e)}",
+            "error": True
+        }
+
+
