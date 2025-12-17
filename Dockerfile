@@ -32,29 +32,6 @@ WORKDIR /app
 # Copy application code
 COPY . .
 
-ENV MONGO_URL=mongodb+srv://admin:admin@cluster0.vvfdq9t.mongodb.net/?appName=Cluster0 \
-    POSTGRES_DB_URL=postgresql://sharpchat:tKzGpx2fMJVef0RxMSYP37VkpSTsF5W3@dpg-d4v9n1qli9vc73djt790-a.oregon-postgres.render.com/sharpchat_ai \
-    PINECONE_API_KEY=pcsk_5UNSG5_75jArK38MLscRAMioss7taqWLJKTPtUbTCmkwFedNbnfyaGaiEgKppFP4erHGjV \
-    KB_INDEX=sharply-chat \
-    PINECONE_CLOUD=aws \
-    PINECONE_REGION=us-east-1 \
-    TWILIO_ACCOUNT_SID=AC4571de225ede8776ca6f8809675c29f1 \
-    TWILIO_AUTH_TOKEN=159a2589db0ac20ac56b44efd04f76b9 \
-    TWILIO_FROM_NUMBER=+14155238886 \
-    GROQ_API_KEY=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 \
-    LLAMA_MODEL=llama-3.3-70b-versatile \
-    TEMPERATURE=0.7 \
-    MAX_TOKENS=2048 \
-    HUGGINGFACE_EMBED_MODEL=sentence-transformers/all-MiniLM-L6-v2 \
-    EMAIL_HOST=smtp.gmail.com \
-    EMAIL_PORT=587 \
-    EMAIL_USER=sharpchatai@gmail.com \
-    EMAIL_PASSWORD=sdyafsniyuepodqm \
-    EMAIL_FROM=sharpchatai@gmail.com \
-    EMAIL_TO=giwaibrahim98@gmail.com,ibrahimgiwa.abiola@gmail.com \
-    EMAIL_PORT_SSL=465 \
-    ENDPOINT_AUTH_KEY=BH8ebZqeqrUehYIFnIubWciuNAmqS/uZ9RetIObuAoU=
-
 # Expose port 8000
 EXPOSE 8000
 
