@@ -1,0 +1,36 @@
+services:
+  sharpchat-api:
+    build:
+      context: .
+      dockerfile: Dockerfile  
+    container_name: rain-meta-hack-server
+    image: rain-meta-hack-server:latest
+    env_file: .env
+
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./static:/app/static
+      - ./logs:/app/logs
+      - ./data:/app/data
+    networks:
+      - omnis-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    dns:
+      - 8.8.8.8 # Google's public DNS
+      - 1.1.1.1 # Cloudflare's public DNS
+
+networks:
+  omnis-network:
+    driver: bridge
+
+volumes:
+  static:
+  logs:
+  data:

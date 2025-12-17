@@ -18,6 +18,8 @@ class Settings(BaseSettings):
     TEMPERATURE:float
     MAX_TOKENS:int
     HUGGINGFACE_EMBED_MODEL:str
+    OPENAI_API_KEY:str
+    OPENAI_EMBEDDING_NAME:str
     EMAIL_HOST:str
     EMAIL_PORT:int
     EMAIL_USER:str
@@ -25,9 +27,9 @@ class Settings(BaseSettings):
     EMAIL_FROM:str
     EMAIL_TO:str
     EMAIL_PORT_SSL:int
-    # TWILIO_ACCOUNT_SID:str
-    # TWILIO_AUTH_TOKEN:str
-    # TWILIO_PHONE_NUMBER:str
+    TWILIO_ACCOUNT_SID:str
+    TWILIO_AUTH_TOKEN:str
+    TWILIO_PHONE_NUMBER:str
     ENDPOINT_AUTH_KEY:str
 
 settings = Settings()
