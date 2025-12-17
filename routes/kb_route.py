@@ -10,6 +10,7 @@ from vector_db.kb_toolkit import (
     embed_all_documents,
     VectorPipeline
 )
+from vector_db.kb_toolkit import process_and_embed_business
 from config.conf import settings
 from models.kbase import (
     EmbedRequest,
@@ -80,58 +81,23 @@ async def embed_single_business(request: EmbedSingleBusinessRequest):
         ```
     """
     try:
-        logger.info(f"Embedding single business: {request.business_id}")
+       
+        result = process_and_embed_business(request.business_id)
         
-        # Fetch the specific business from MongoDB
-        from config.database import business_collection
-        business = business_collection.find_one({"business_id": request.business_id})
-        
-        if not business:
-            raise HTTPException(
-                status_code=404,
-                detail=f"Business {request.business_id} not found in database"
-            )
-        
-        # Initialize pipeline
-        pipeline = VectorPipeline()
-        
-        # Create vector records for this business
-        from vector_db.kb_toolkit import create_vector_records, upsert_to_pinecone, check_if_business_changed
-        
-        # Check if business has changed
-        namespace = ""
-        has_changed = check_if_business_changed(business, pipeline, namespace)
-        
-        if not has_changed:
-            logger.info(f"Business {request.business_id} is already up-to-date")
-            return EmbedResponse(
-                status="success",
-                message=f"Business {request.business_id} is already up-to-date",
-                total_businesses=1,
-                total_vectors=0,
-                changed_businesses=0,
-                skipped_businesses=1
-            )
-        
-        # Create and upsert vectors
-        records = create_vector_records(business, chunk_text_content=True)
-        
-        if records:
-            stats = upsert_to_pinecone(pipeline, records, batch_size=100, namespace=namespace)
+        if result.get("error"):
+            # If business not found (404-like error) or other error
+            if "not found" in result.get("message", "").lower():
+                 raise HTTPException(status_code=404, detail=result["message"])
+            raise HTTPException(status_code=500, detail=result["message"])
             
-            return EmbedResponse(
-                status="success",
-                message=f"Successfully embedded business {request.business_id}",
-                total_businesses=1,
-                total_vectors=len(records),
-                changed_businesses=1,
-                skipped_businesses=0
-            )
-        else:
-            raise HTTPException(
-                status_code=500,
-                detail=f"Failed to create vector records for business {request.business_id}"
-            )
+        return EmbedResponse(
+            status=result.get("status", "success"),
+            message=result.get("message", ""),
+            total_businesses=result.get("total_businesses", 1),
+            total_vectors=result.get("total_vectors", 0),
+            changed_businesses=result.get("changed_businesses", 0),
+            skipped_businesses=result.get("skipped_businesses", 0)
+        )
         
     except HTTPException:
         raise
@@ -160,7 +126,7 @@ async def delete_business(business_id: str):
     try:
         logger.info(f"Deleting business {business_id} from knowledge base")
         
-        # Initialize pipeline (no parameters needed - reads from settings)
+        # Initialize pipeline
         pipeline = VectorPipeline()
         
         # Delete vectors with matching business_id

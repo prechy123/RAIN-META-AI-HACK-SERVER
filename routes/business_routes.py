@@ -5,6 +5,7 @@ from config.database import business_collection
 from schema.schemas import business_serial, business_list_serial
 from bson import ObjectId
 from passlib.context import CryptContext
+from vector_db.kb_toolkit import process_and_embed_business
 
 router = APIRouter()
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -41,11 +42,15 @@ async def signup_business(business: Business):
         result = business_collection.insert_one(business_dict)
         new_business = business_collection.find_one(
             {"_id": result.inserted_id})
+            
+        # Trigger embedding for the new business
+        embedding_result = process_and_embed_business(new_business["business_id"])
 
         return JSONResponse(
             status_code=200,
             content={"message": "Business registered successfully",
-                     "business": business_serial(new_business)}
+                     "business": business_serial(new_business),
+                     "embedding_result": embedding_result}
         )
     except Exception as e:
         return JSONResponse(
@@ -53,9 +58,8 @@ async def signup_business(business: Business):
             content={"message": "Internal server error", "error": str(e)}
         )
 
+
 # POST - Business Login
-
-
 @router.post("/login")
 async def login_business(email: str, password: str):
     try:
@@ -77,9 +81,8 @@ async def login_business(email: str, password: str):
             content={"message": "Internal server error", "error": str(e)}
         )
 
+
 # GET - Get business by ID
-
-
 @router.get("/{business_id}")
 async def get_business(business_id: str):
     try:
@@ -100,9 +103,8 @@ async def get_business(business_id: str):
             content={"message": "Internal server error", "error": str(e)}
         )
 
+
 # GET - Search businesses by name
-
-
 @router.get("/search/{name}")
 async def search_business(name: str):
     try:
@@ -146,10 +148,14 @@ async def update_business(business_id: str, update: BusinessUpdate):
                 content={"message": "Business not found", "error": True}
             )
 
+        # Trigger embedding update for the business
+        embedding_result = process_and_embed_business(business_id)
+
         return JSONResponse(
             status_code=200,
             content={"message": "Business updated successfully",
-                     "business": business_serial(updated)}
+                     "business": business_serial(updated),
+                     "embedding_result": embedding_result}
         )
     except Exception as e:
         return JSONResponse(
