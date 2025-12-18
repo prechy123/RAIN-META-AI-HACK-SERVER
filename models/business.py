@@ -3,7 +3,7 @@ from typing import Optional, List
 
 class BusinessItem(BaseModel):
     name: str
-    price: float
+    price: str
     description: Optional[str] = None
 
 class FAQ(BaseModel):
@@ -18,7 +18,7 @@ class Business(BaseModel):
     businessDescription: str
     businessAddress: str
     businessPhone: str
-    businessEmailAddress: Optional[EmailStr] = None
+    businessEmailAddress: Optional[str] = None
     businessCategory: str
     businessOpenHours: Optional[str] = None
     businessOpenDays: Optional[str] = None
