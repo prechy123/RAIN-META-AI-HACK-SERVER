@@ -1,27 +1,33 @@
-from langchain_huggingface import HuggingFaceEmbeddings
-import logging
+from langchain_cohere import CohereEmbeddings
 from config.conf import settings
-
-logger = logging.getLogger("embeddings")
 
 def get_embeddings():
     """
-    Get HuggingFace embedding model.
+    Get Embeddings - Optimized for Cohere rate limits
+    Using light model to reduce token usage and cost
     """
-    try:
-        model_name = settings.HUGGINGFACE_EMBED_MODEL
-        logger.info(f"Initializing HuggingFace embeddings...")
-        
-        embeddings = HuggingFaceEmbeddings(
-            model_name=model_name,
-            model_kwargs={'device': 'cpu'},  # Use CPU (works everywhere)
-            encode_kwargs={'normalize_embeddings': True}  # Better similarity search
-        )
-        
-        return embeddings
-        
-    except Exception as e:
-        logger.error(f"❌ Failed to initialize HuggingFace embeddings: {str(e)}")
-        raise RuntimeError(
-            f"Failed to initialize embeddings. Error: {str(e)}\n"
-        )
+    embeddings = CohereEmbeddings(
+        model="embed-english-light-v3.0", 
+        cohere_api_key=settings.COHERE_API_KEY,
+        max_retries=5,  
+        request_timeout=120  
+    )
+    
+    return embeddings
+
+
+
+# from langchain_openai import OpenAIEmbeddings
+# from config.conf import settings
+
+# def get_embeddings():
+#     """
+#     Get Embeddings
+#     """
+    
+#     embeddings = OpenAIEmbeddings(
+#         model=settings.OPENAI_EMBEDDING_NAME,
+#         openai_api_key=settings.OPENAI_API_KEY
+#     )
+    
+#     return embeddings
