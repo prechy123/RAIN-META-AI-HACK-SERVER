@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     MONGO_URL:str
     POSTGRES_DB_URL:str
     PINECONE_API_KEY:str
+    COHERE_API_KEY:str
     KB_INDEX:str
     PINECONE_CLOUD:str
     PINECONE_REGION:str
@@ -17,9 +18,6 @@ class Settings(BaseSettings):
     LLAMA_MODEL:str
     TEMPERATURE:float
     MAX_TOKENS:int
-    HUGGINGFACE_EMBED_MODEL:str
-    OPENAI_API_KEY:str
-    OPENAI_EMBEDDING_NAME:str
     EMAIL_HOST:str
     EMAIL_PORT:int
     EMAIL_USER:str
