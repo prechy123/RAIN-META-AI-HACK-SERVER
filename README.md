@@ -1,4 +1,4 @@
-# SharpChat AI - AI-Powered Chatbot Platform for SMEs
+# AlatChat AI - AI-Powered Chatbot Platform for SMEs
 
 <div align="center">
 
@@ -36,7 +36,7 @@
 
 ## 🎯 Overview
 
-**SharpChat AI** is an intelligent conversational AI platform designed specifically for small and medium enterprises (SMEs). It provides a sophisticated multi-tier routing system that intelligently handles customer queries through:
+**AlatChat AI** is an intelligent conversational AI platform designed specifically for small and medium enterprises (SMEs). It provides a sophisticated multi-tier routing system that intelligently handles customer queries through:
 
 - **Tier 1**: FAQ-based responses using semantic search and vector embeddings
 - **Tier 2**: Complex queries requiring human intervention with automated email escalation
@@ -423,7 +423,7 @@ curl -X POST "http://localhost:8000/kb/upload" \
 
 ```
 User: Hi
-Bot: Welcome to SharpChat AI! 👋
+Bot: Welcome to AlatChat AI! 👋
      What's your name?
 
 User: John
@@ -544,21 +544,21 @@ The application uses automatic schema initialization. On first run:
 
 1. **Build the Docker image**
    ```bash
-   docker build -t sharpchat-ai:1.0.0 .
+   docker build -t AlatChat-ai:1.0.0 .
    ```
 
 2. **Run the container**
    ```bash
    docker run -d \
-     --name sharpchat-api \
+     --name AlatChat-api \
      -p 8000:8000 \
      --env-file .env \
-     sharpchat-ai:1.0.0
+     AlatChat-ai:1.0.0
    ```
 
 3. **For macOS (ARM architecture)**
    ```bash
-   docker build --platform linux/amd64 -t sharpchat-ai:1.0.0 .
+   docker build --platform linux/amd64 -t AlatChat-ai:1.0.0 .
    ```
 
 ### Production Considerations

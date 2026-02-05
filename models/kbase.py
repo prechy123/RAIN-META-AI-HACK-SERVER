@@ -3,8 +3,8 @@ from typing import Optional
 
 class EmbedRequest(BaseModel):
     """Request model for embedding documents"""
-    category: Optional[str] = None  # Filter by business category
-    limit: Optional[int] = None  # Limit number of businesses to embed
+    category: str = ""  # Filter by business category (empty string = all categories)
+    limit: int = 0  # Limit number of businesses to embed (0 = no limit)
 
 
 class EmbedSingleBusinessRequest(BaseModel):

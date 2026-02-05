@@ -36,7 +36,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="ShapChat API",
+    title="AlatChat API",
     description="AI-Powered Chatting platform for local SMEs",
     version="0.1.0",
     docs_url="/docs",
@@ -57,7 +57,7 @@ app.add_middleware(
 async def root():
     """Root endpoint"""
     return {
-        "message": "Welcome to the SharpChat AI Chatbot API! Visit /docs for API documentation."
+        "message": "Welcome to the AlatChat AI Chatbot API! Visit /docs for API documentation."
     }
 
 
@@ -66,7 +66,7 @@ async def health_check():
     """Health check endpoint"""
     return {
         "status": "healthy",
-        "service": "SharpChat AI Chatbot"
+        "service": "AlatChat AI Chatbot"
     }
 
 app.include_router(WhatsAppWebhookRouter, prefix="/web-hook",

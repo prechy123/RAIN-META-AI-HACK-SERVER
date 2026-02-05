@@ -4,8 +4,6 @@ Endpoints for managing the Pinecone vector database
 """
 import logging
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
-from typing import Optional
 from vector_db.kb_toolkit import (
     embed_all_documents,
     VectorPipeline

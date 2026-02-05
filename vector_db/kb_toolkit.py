@@ -143,7 +143,13 @@ def process_business_to_text(business: Dict[str, Any]) -> str:
         for item in items:
             # Use Nigerian Naira symbol (₦) for prices
             price = item.get('price', 0)
-            item_text = f"- {item.get('name', 'N/A')} (₦{price:,.0f})"
+            # Convert price to float if it's a string
+            try:
+                price_float = float(price) if price else 0
+                item_text = f"- {item.get('name', 'N/A')} (₦{price_float:,.0f})"
+            except (ValueError, TypeError):
+                # If conversion fails, display price as-is
+                item_text = f"- {item.get('name', 'N/A')} (₦{price})"
             if item.get('description'):
                 item_text += f": {item['description']}"
             text_parts.append(item_text)
