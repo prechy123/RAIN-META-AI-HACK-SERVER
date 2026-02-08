@@ -23,7 +23,6 @@ class Settings(BaseSettings):
     EMAIL_USER:str
     EMAIL_PASSWORD:str
     EMAIL_FROM:str
-    EMAIL_TO:str
     EMAIL_PORT_SSL:int
     TWILIO_ACCOUNT_SID:str
     TWILIO_AUTH_TOKEN:str
