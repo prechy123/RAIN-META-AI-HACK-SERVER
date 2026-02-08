@@ -35,7 +35,7 @@ async def send_support_email(
     try:
         # Create email
         msg = MIMEMultipart('alternative')
-        msg['Subject'] = f"SharpChat AI - Customer Support Request for {business_name}"
+        msg['Subject'] = f"AlatChat AI - Customer Support Request for {business_name}"
         msg['From'] = settings.EMAIL_FROM
         msg['To'] = business_email
         
@@ -61,7 +61,7 @@ async def send_support_email(
                   A customer needs your attention
                 </p>
               </div>
-              <img src="https://rain-meta-hack-web.vercel.app/logo.jpeg" alt="SharpChat Logo" width="100" style="display: block; border-radius: 24px;">
+              <img src="https://rain-meta-hack-web.vercel.app/logo.jpeg" alt="AlatChat Logo" width="100" style="display: block; border-radius: 24px;">
             </td>
           </tr>
           <tr>
@@ -112,7 +112,7 @@ async def send_support_email(
             <td style="padding: 0 40px 32px;">
               <div style="border-top: 1px solid #f5f5f7; padding-top: 24px;">
                 <p style="margin: 0; color: #86868b; font-size: 13px; line-height: 1.5;">
-                  Sent via SharpChat AI, <a href="https://rain-meta-hack-web.vercel.app/" target="_blank" style="color: #0071e3; text-decoration: none;">CLICK TO REGISTER YOUR BUSINESS WITH US.</a>
+                  Sent via AlatChat AI, <a href="https://rain-meta-hack-web.vercel.app/" target="_blank" style="color: #0071e3; text-decoration: none;">CLICK TO REGISTER YOUR BUSINESS WITH US.</a>
                 </p>
                 <p style="margin: 8px 0 0; color: #86868b; font-size: 13px; line-height: 1.5;">
                   Reply to <a href="mailto:{user_email}" style="color: #0071e3; text-decoration: none;">{user_email}</a> or call <a href="tel:{user_phone}" style="color: #0071e3; text-decoration: none;">{user_phone}</a>

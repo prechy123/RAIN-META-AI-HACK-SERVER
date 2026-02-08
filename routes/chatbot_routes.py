@@ -1,5 +1,5 @@
 """
-Chatbot routes for SharpChat AI
+Chatbot routes for AlatChat AI
 """
 import logging
 from fastapi import APIRouter, HTTPException, status
@@ -95,7 +95,7 @@ async def web_chat(request: WebChatRequest) -> WebChatResponse:
             update_web_session(
                 session_id, {"state": SessionState.AWAITING_NAME})
             return WebChatResponse(
-                answer="Welcome to SharpChat AI! 👋\n\nWhat's your name?\n\n💡 Type 'exit' anytime to start over.",
+                answer="Welcome to AlatChat AI! 👋\n\nWhat's your name?\n\n💡 Type 'exit' anytime to start over.",
                 state=SessionState.AWAITING_NAME
             )
 

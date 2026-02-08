@@ -263,7 +263,7 @@ Create a `.env` file in the project root with the following variables:
 ```env
 # Database Configuration
 MONGO_URL=mongodb://localhost:27017/
-POSTGRES_DB_URL=postgresql://user:password@localhost:5432/sharpchat
+POSTGRES_DB_URL=postgresql://user:password@localhost:5432/alatchat
 
 # LLM Configuration
 LLAMA_API_KEY=your-llm-api-key
@@ -582,7 +582,7 @@ LOG_LEVEL=INFO
 
 # Database URLs (use production credentials)
 MONGO_URL=mongodb://prod-mongo:27017/
-POSTGRES_DB_URL=postgresql://prod-user:prod-pass@prod-db:5432/sharpchat
+POSTGRES_DB_URL=postgresql://prod-user:prod-pass@prod-db:5432/alatchat
 
 # Security
 API_KEY=<strong-random-key>

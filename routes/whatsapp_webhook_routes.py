@@ -1,5 +1,5 @@
 """
-WhatsApp Webhook routes for SharpChat AI
+WhatsApp Webhook routes for AlatChat AI
 Handles multi-step conversation flow with Twilio integration
 """
 import logging
@@ -149,7 +149,7 @@ async def whatsapp_webhook(request: Request):
         if current_state == SessionState.INITIAL:
             # First interaction - ask for name
             resp.message(
-                "Welcome to SharpChat AI! 👋\n\n"
+                "Welcome to AlatChat AI! 👋\n\n"
                 "What's your name?\n\n"
                 "💡 Type 'exit' anytime to start over."
             )

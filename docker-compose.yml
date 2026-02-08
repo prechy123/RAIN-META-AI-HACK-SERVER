@@ -1,10 +1,10 @@
 services:
-  sharpchat-api:
+  alatchat-api:
     build:
       context: .
       dockerfile: Dockerfile  
-    container_name: rain-meta-hack-server
-    image: rain-meta-hack-server:latest
+    container_name: alatchat-api
+    image: alatchat-api:latest
     env_file: .env
 
     ports:
@@ -14,7 +14,7 @@ services:
       - ./logs:/app/logs
       - ./data:/app/data
     networks:
-      - omnis-network
+      - alatchat-network
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
@@ -27,7 +27,7 @@ services:
       - 1.1.1.1 # Cloudflare's public DNS
 
 networks:
-  omnis-network:
+  alatchat-network:
     driver: bridge
 
 volumes:

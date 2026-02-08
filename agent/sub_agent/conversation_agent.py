@@ -22,7 +22,7 @@ async def conversation_agent(state: AgentState) -> dict:
     chat_history = format_chat_history(state["messages"][:-1])  # Exclude current message
     business_name = state.get("business_name", "this business")
     
-    conversation_prompt = f"""You are SharpChatAI, a helpful and friendly customer care agent for {business_name}.
+    conversation_prompt = f"""You are AlatChat AI, a helpful and friendly customer care agent for {business_name}.
 
 **YOUR PERSONALITY:**
 - Warm, professional, and approachable
