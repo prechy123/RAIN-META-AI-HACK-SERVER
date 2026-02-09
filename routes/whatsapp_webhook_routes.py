@@ -4,12 +4,15 @@ Handles multi-step conversation flow with Twilio integration
 """
 import logging
 from fastapi import APIRouter, Request, Response, HTTPException
+from fastapi.responses import JSONResponse
 from twilio.twiml.messaging_response import MessagingResponse
 from config.database import business_collection, session_collection
 from datetime import datetime, timezone
 from difflib import SequenceMatcher
 import uuid
 from agent.main_agent import main_agent
+from schema.schemas import business_minimal_list_serial
+from config.database import business_collection
 
 logger = logging.getLogger("whatsapp_webhook")
 
@@ -308,3 +311,20 @@ async def reset_session(whatsapp_number: str):
 
     return {"message": "Session reset successfully"}
 
+@router.get("/get-all-business")
+async def get_all_businesses():
+    """Get all businesses with business_id, name, and description"""
+    try:
+        businesses = list(business_collection.find())
+        return JSONResponse(
+            status_code=200,
+            content={
+                "businesses": business_minimal_list_serial(businesses),
+                "count": len(businesses)
+            }
+        )
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content={"message": "Internal server error", "error": str(e)}
+        )
