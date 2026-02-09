@@ -5,9 +5,11 @@ def individual_serial(todo) -> dict:
         "description": todo["description"],
         "complete": todo["complete"]
     }
-    
+
+
 def list_serial(todos) -> list:
     return [individual_serial(todo) for todo in todos]
+
 
 def business_serial(business) -> dict:
     return {
@@ -29,5 +31,20 @@ def business_serial(business) -> dict:
         "items": business.get("items", [])
     }
 
+
 def business_list_serial(businesses) -> list:
     return [business_serial(business) for business in businesses]
+
+
+def business_minimal_serial(business) -> dict:
+    """Serialize business with only business_id, name, and description"""
+    return {
+        "business_id": business["business_id"],
+        "name": business["businessName"],
+        "description": business["businessDescription"]
+    }
+
+
+def business_minimal_list_serial(businesses) -> list:
+    """Serialize list of businesses with minimal info"""
+    return [business_minimal_serial(business) for business in businesses]

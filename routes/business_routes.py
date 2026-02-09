@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse
 from models.business import Business, BusinessUpdate
 from config.database import business_collection
-from schema.schemas import business_serial, business_list_serial
+from schema.schemas import business_serial, business_list_serial, business_minimal_list_serial
 from bson import ObjectId
 from passlib.context import CryptContext
 from vector_db.kb_toolkit import process_and_embed_business
@@ -10,6 +10,27 @@ from vector_db.kb_toolkit import process_and_embed_business
 router = APIRouter()
 # Use PBKDF2-SHA256 instead of bcrypt (no 72-byte limitation)
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
+
+# GET - Get all businesses with minimal info
+
+
+@router.get("/")
+async def get_all_businesses():
+    """Get all businesses with business_id, name, and description"""
+    try:
+        businesses = list(business_collection.find())
+        return JSONResponse(
+            status_code=200,
+            content={
+                "businesses": business_minimal_list_serial(businesses),
+                "count": len(businesses)
+            }
+        )
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content={"message": "Internal server error", "error": str(e)}
+        )
 
 
 def generate_business_id():

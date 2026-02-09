@@ -46,6 +46,7 @@ EXPOSE 80
 
 # Run the application
 CMD ["/opt/venv/bin/python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80"]
+# uvicorn main:app --host 0.0.0.0 --port 80
 
 # docker build -t rain-meta-hack-server:1.0.[X] .
 # docker images
