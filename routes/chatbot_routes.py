@@ -109,7 +109,7 @@ async def web_chat(request: WebChatRequest) -> WebChatResponse:
                 "name": user_name
             })
             return WebChatResponse(
-                answer=f"Nice to meet you, {user_name}! 😊\n\nWhich business would you like to chat with?\n\n💡 You can enter:\n• Business ID (e.g., BUS-0001)\n• Business name (e.g., Joe's Coffee Shop)",
+                answer=f"Nice to meet you, {user_name}! 😊\n\nWhich business would you like to chat with?",
                 state=SessionState.AWAITING_BUSINESS
             )
 

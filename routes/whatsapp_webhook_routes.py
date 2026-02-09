@@ -163,10 +163,7 @@ async def whatsapp_webhook(request: Request):
             user_name = incoming_msg
             resp.message(
                 f"Nice to meet you, {user_name}! 😊\n\n"
-                f"Which business would you like to chat with?\n\n"
-                f"💡 You can enter:\n"
-                f"• Business ID (e.g., BUS-0001)\n"
-                f"• Business name (e.g., Joe's Coffee Shop)"
+                f"Which business would you like to chat with?"
             )
             update_session(from_number, {
                 "state": SessionState.AWAITING_BUSINESS,
