@@ -307,3 +307,4 @@ async def reset_session(whatsapp_number: str):
         raise HTTPException(status_code=404, detail="Session not found")
 
     return {"message": "Session reset successfully"}
+

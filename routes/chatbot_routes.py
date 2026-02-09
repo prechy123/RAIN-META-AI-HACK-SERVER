@@ -3,6 +3,7 @@ Chatbot routes for AlatChat AI
 """
 import logging
 from fastapi import APIRouter, HTTPException, status
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, EmailStr
 from typing import Optional
 from datetime import datetime, timezone
@@ -16,6 +17,8 @@ from routes.utils.session_utils import (
     find_business_by_id,
     find_business_by_name
 )
+from schema.schemas import business_minimal_list_serial
+from config.database import business_collection
 
 logger = logging.getLogger("chatbot_routes")
 
@@ -245,3 +248,21 @@ async def chat(request: ChatRequest) -> ChatResponse:
         logger.error(f"Error in chat endpoint: {str(e)}", exc_info=True)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
+@router.get("/get-all-business")
+async def get_all_businesses():
+    """Get all businesses with business_id, name, and description"""
+    try:
+        businesses = list(business_collection.find())
+        return JSONResponse(
+            status_code=200,
+            content={
+                "businesses": business_minimal_list_serial(businesses),
+                "count": len(businesses)
+            }
+        )
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content={"message": "Internal server error", "error": str(e)}
+        )
