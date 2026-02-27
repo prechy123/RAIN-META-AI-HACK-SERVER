@@ -36,25 +36,25 @@ USER appuser
 ENV PYTHONPATH=/app
 ENV PYTHONUNBUFFERED=1    
 
-# Expose port 8000
-EXPOSE 80
+# Expose port 8081
+EXPOSE 8081
 
 
 # Health check
-# HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-#     CMD curl -f http://localhost:8000/health || exit 1
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:8081/health || exit 1
 
 # Run the application
-CMD ["/opt/venv/bin/python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80"]
-# uvicorn main:app --host 0.0.0.0 --port 80
+CMD ["python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8081"]
+# uvicorn main:app --host 0.0.0.0 --port 8081
 
-# docker build -t rain-meta-hack-server:1.0.[X] .
+# docker build -t alatchat-api:latest .
 # docker images
-# docker tag rain-meta-hack-server:1.0.[X] ayomide100/rain-meta-hack-server:1.0.[X]
-# docker push ayomide100/rain-meta-hack-server:1.0.[X]
+# docker tag alatchat-api:latest giwabest/alatchat-api:latest
+# docker push giwabest/alatchat-api:latest
 
 # for macbook architecture
-# docker build --platform linux/amd64 -t rain-meta-hack-server:1.0.[X] .
-# docker tag rain-meta-hack-server:1.0.[X] ayomide100/rain-meta-hack-server:1.0.[X]
-# docker push ayomide100/rain-meta-hack-server:1.0.[X]
+# docker build --platform linux/amd64 -t alatchat-api:latest .
+# docker tag alatchat-api:latest giwabest/alatchat-api:latest
+# docker push giwabest/alatchat-api:latest
 

@@ -252,7 +252,7 @@ The system uses **LangGraph** to orchestrate a stateful agent workflow:
    uvicorn main:app --reload
    ```
 
-   The API will be available at `http://localhost:8000`
+   The API will be available at `http://localhost:8081`
 
 ---
 
@@ -309,8 +309,8 @@ API_KEY=your-secure-api-key
 
 Once the server is running, access the interactive API documentation:
 
-- **Swagger UI**: `http://localhost:8000/docs`
-- **ReDoc**: `http://localhost:8000/redoc`
+- **Swagger UI**: `http://localhost:8081/docs`
+- **ReDoc**: `http://localhost:8081/redoc`
 
 ### API Endpoints Overview
 
@@ -361,7 +361,7 @@ GET /health
 ### 1. Register a Business
 
 ```bash
-curl -X POST "http://localhost:8000/business/signup" \
+curl -X POST "http://localhost:8081/business/signup" \
   -H "Content-Type: application/json" \
   -d '{
     "businessName": "Joe'\''s Coffee Shop",
@@ -387,7 +387,7 @@ curl -X POST "http://localhost:8000/business/signup" \
 ### 2. Chat with the Bot
 
 ```bash
-curl -X POST "http://localhost:8000/chatbot/chat" \
+curl -X POST "http://localhost:8081/chatbot/chat" \
   -H "Content-Type: application/json" \
   -H "X-API-Key: your-api-key" \
   -d '{
@@ -412,7 +412,7 @@ curl -X POST "http://localhost:8000/chatbot/chat" \
 ### 3. Upload Knowledge Base Documents
 
 ```bash
-curl -X POST "http://localhost:8000/kb/upload" \
+curl -X POST "http://localhost:8081/kb/upload" \
   -H "X-API-Key: your-api-key" \
   -F "business_id=BUS-0001" \
   -F "files=@menu.pdf" \
@@ -551,7 +551,7 @@ The application uses automatic schema initialization. On first run:
    ```bash
    docker run -d \
      --name AlatChat-api \
-     -p 8000:8000 \
+     -p 8081:8081 \
      --env-file .env \
      AlatChat-ai:1.0.0
    ```
